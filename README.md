@@ -1,2 +1,1 @@
-# hackathon
-Keep Calm and Hack On
+# Keep Calm and Hack On
