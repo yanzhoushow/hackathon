@@ -1,0 +1,58 @@
+service: lambda-scraper
+
+custom:
+  s3Bucket: test-scraper-files
+
+provider:
+  name: aws
+  region: us-east-1
+  versionFunctions: false
+  layers:
+    # Google Chrome for AWS Lambda as a layer
+    # Make sure you use the latest version depending on the region
+    # https://github.com/shelfio/chrome-aws-lambda-layer
+    - arn:aws:lambda:${self:provider.region}:764866452798:layer:chrome-aws-lambda:22
+  runtime: nodejs12.x
+  memorySize: 2048 # recommended
+  timeout: 30
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - s3:PutObject
+        - s3:PutObjectAcl
+      Resource: arn:aws:s3:::${self:custom.s3Bucket}/*
+
+plugins:
+  - serverless-offline
+
+functions:
+  capture:
+    handler: src/scraper.handler
+    environment:
+      S3_REGION: ${self:provider.region}
+      S3_BUCKET: ${self:custom.s3Bucket}
+    events:
+      - http:
+          path: /
+          method: post
+
+resources:
+  Resources:
+    scraperBucket:
+      Type: AWS::S3::Bucket
+      DeletionPolicy: Delete
+      Properties:
+        BucketName: ${self:custom.s3Bucket}
+        AccessControl: Private
+    scraperBucketPolicy:
+      Type: AWS::S3::BucketPolicy
+      Properties:
+        PolicyDocument:
+          Statement:
+            - Effect: Allow
+              Action:
+                - s3:GetObject
+              Principal: "*"
+              Resource: arn:aws:s3:::${self:custom.s3Bucket}/*
+        Bucket:
+          Ref: scraperBucket
