@@ -1,0 +1,19 @@
+{
+  "name": "lambda-screenshots",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "chrome-aws-lambda": "^5.5.0",
+    "puppeteer-extra": "^3.1.15",
+    "puppeteer-extra-plugin-stealth": "^2.6.5",
+    "serverless": "^2.16.1",
+    "serverless-offline": "^6.8.0"
+  }
+}
