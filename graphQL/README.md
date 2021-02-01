@@ -1,3 +1,7 @@
+### Why GraphQL
+- Better than REST?
+  - https://www.howtographql.com/basics/1-graphql-is-the-better-rest/
+
 ### GraphQL
 - GraphQL is a specification typically used for remote client-server communications. 
 - Unlike SQL, GraphQL is agnostic to the data source(s) used to retrieve data and persist changes
