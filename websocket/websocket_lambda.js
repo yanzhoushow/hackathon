@@ -39,7 +39,7 @@ exports.handler = async (event, context) => {
         
         const apigatewayManagementApi = new  AWS.ApiGatewayManagementApi({
             apiVersion: '2018-11-29',
-            endpoint: '4fp8o2tn54.execute-api.us-east-1.amazonaws.com/dev',
+            endpoint: '<api-gateway-id>.execute-api.us-east-1.amazonaws.com/dev',
         });
         
         const params = {      
