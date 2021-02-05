@@ -1,0 +1,65 @@
+service: scraperService
+
+custom:
+  s3Bucket: scraper-snapshots-dev
+
+provider:
+  name: aws
+  runtime: nodejs12.x
+  versionFunctions: false
+  websocketsApiName: websocket-scraper-api
+   # custom routes are selected by the action property in request body
+  websocketsApiRouteSelectionExpression: $request.body.action
+  layers:
+    # Google Chrome for AWS Lambda as a layer
+    # Make sure you use the latest version depending on the region
+    # https://github.com/shelfio/chrome-aws-lambda-layer
+    - arn:aws:lambda:${self:provider.region}:764866452798:layer:chrome-aws-lambda:22
+  memorySize: 2048      # recommended
+  timeout: 30
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - s3:PutObject
+        - s3:PutObjectAcl
+      Resource: arn:aws:s3:::${self:custom.s3Bucket}/*
+
+functions:
+  connection:
+    handler: src/connection.handler
+    events:
+      - websocket:
+          route: $connect
+      - websocket:
+          route: $disconnect
+  default:
+    handler: src/default.handler
+    events:
+      - websocket:
+          route: $default
+  scraper:
+    handler: src/scraper.handler
+    events:
+      - websocket:
+          route: scraper          # will trigger if $request.body.action === "scraper"
+
+resources:
+  Resources:
+    snapshotBucket:
+      Type: AWS::S3::Bucket
+      DeletionPolicy: Delete
+      Properties:
+        BucketName: ${self:custom.s3Bucket}
+        AccessControl: Private
+    snapshotBucketBucketPolicy:
+      Type: AWS::S3::BucketPolicy
+      Properties:
+        PolicyDocument:
+          Statement:
+            - Effect: Allow
+              Action:
+                - s3:GetObject
+              Principal: "*"
+              Resource: arn:aws:s3:::${self:custom.s3Bucket}/*
+        Bucket:
+          Ref: snapshotBucket
