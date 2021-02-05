@@ -5,7 +5,7 @@ const url = require('url');
 const fetch = require('node-fetch');
 const HttpsProxyAgent = require('https-proxy-agent');
 
-const reverse_proxy = "http://<vgs-user>:<vgs-pswd>@tntqolsgkl9.sandbox.verygoodproxy.com:8080";
+const reverse_proxy = "http://<vgs-user>:<vgs-pswd>@<vgs-id>.sandbox.verygoodproxy.com:8080";
 const urlParams = url.parse(reverse_proxy);
 
 const agent = new HttpsProxyAgent({
@@ -13,6 +13,7 @@ const agent = new HttpsProxyAgent({
   ca: [fs.readFileSync('./sandbox-cert.pem')],
 });
 
+// need to config the route in VGS portal
 async function detokenize(tokenized_password) {
   let result;
   try {
@@ -33,7 +34,7 @@ async function detokenize(tokenized_password) {
 }
 
 async function call() {
-  const result = await detokenize("tok_sandbox_25nA6SHN4FtUszR3fEUxbE"); 
+  const result = await detokenize("<vgs-token>"); 
   console.log(result.json.password);
 }
 
