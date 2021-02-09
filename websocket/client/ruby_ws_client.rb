@@ -7,7 +7,6 @@ message = {
   "data": "hello_world"
 }
 
-
 url = "wss://<gateway-id>.execute-api.us-east-1.amazonaws.com/dev"
 
 EM.run {
